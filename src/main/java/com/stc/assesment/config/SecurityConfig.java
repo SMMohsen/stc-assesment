@@ -19,10 +19,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${api.password}")
     private String password;
 
+    private static final String[] AUTH_WHITELIST = { "/swagger-resources/**", "/swagger-ui.html", "/v2/api-docs",
+            "/webjars/**" };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().httpBasic().and().authorizeRequests()
-                .antMatchers("/swagger**").permitAll().anyRequest().authenticated();
+                .antMatchers(AUTH_WHITELIST).permitAll().anyRequest().authenticated();
         super.configure(http);
     }
 
