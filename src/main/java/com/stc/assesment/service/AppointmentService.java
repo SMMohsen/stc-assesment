@@ -2,6 +2,7 @@ package com.stc.assesment.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.stc.assesment.constant.AppointmentStatus;
+import com.stc.assesment.constant.CancellationReason;
 import com.stc.assesment.dto.AppointmentDTO;
 import com.stc.assesment.model.Appointment;
 import com.stc.assesment.repository.AppointmentRepository;
@@ -38,7 +39,7 @@ public class AppointmentService {
         Appointment appointment = modelMapper.map(appointmentDTO,Appointment.class);
         appointment.setStatus(AppointmentStatus.ACTIVE.toString());
         appointmentRepository.save(appointment);
-        return 0l;
+        return appointment.getId();
     }
 
     public List<AppointmentDTO> getAllAppointmentsByDate(LocalDate date) {
@@ -47,10 +48,10 @@ public class AppointmentService {
         return appointments.stream().map(a -> modelMapper.map(a,AppointmentDTO.class)).collect(Collectors.toList());
     }
 
-    public void cancelAppointment(Long appointmentId , String cancellationReason) {
+    public void cancelAppointment(Long appointmentId , CancellationReason cancellationReason) {
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(IllegalArgumentException::new);
         appointment.setStatus(AppointmentStatus.CANCEL.toString());
-        appointment.setCancellationReason(cancellationReason);
+        appointment.setCancellationReason(cancellationReason.name());
         appointmentRepository.save(appointment);
     }
 
